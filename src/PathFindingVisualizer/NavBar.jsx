@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import { Speed, PlayArrow, Pause, Replay} from "@mui/icons-material";
 
-function Navbar({handlePlayButton, handlePauseButton, handleResetButton}) {
+function Navbar({handlePlayButton, handlePauseButton, handleResetButton, generateMaze}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [speed, setSpeed] = useState("Medium");
   const [isRunning, setIsRunning] = useState(false);
@@ -80,6 +80,9 @@ function Navbar({handlePlayButton, handlePauseButton, handleResetButton}) {
           <IconButton color="inherit" onClick={handleResetButtonClick}>
             <Replay />
           </IconButton>
+          <Button color="inherit" onClick={generateMaze}>
+            Generate Maze
+          </Button>
         </Toolbar>
       </AppBar>
   );

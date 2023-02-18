@@ -1,26 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import Node from './Node/Node';
 import {dijkstra, getNodesInShortestPathOrder} from '../algorithms/dijkstra';
-
 import './PathFindingVisualizer.css';
 import NavBar from "./NavBar";
+
+import generateRandomMaze from "../MazeAlgorithms/RandomMaze";
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
 const FINISH_NODE_ROW = 10;
 const FINISH_NODE_COL = 35;
 
+const ROW_COUNT = 20
+const COLUMN_COUNT = 50
 export default function PathfindingVisualizer() {
     const [grid, setGrid] = useState([]);
     const [mouseIsPressed, setMouseIsPressed] = useState(false);
+    const [mazeSpeed, setMazeSpeed] = useState(10);
 
     useEffect(() => {
         setGrid(getInitialGrid());
     }, []);
 
     function handleReset() {
-        for (let row = 0; row < 20; row++) {
-            for (let col = 0; col < 50; col++) {
+        for (let row = 0; row < ROW_COUNT; row++) {
+            for (let col = 0; col < COLUMN_COUNT; col++) {
                 if (row === START_NODE_ROW && col === START_NODE_COL){
                     document.getElementById(`node-${row}-${col}`).className = "node node-start";
                 } else if (row === FINISH_NODE_ROW && col === FINISH_NODE_COL) {
@@ -32,7 +36,6 @@ export default function PathfindingVisualizer() {
             }
         }
         setGrid(getInitialGrid());
-        console.log(grid)
     }
 
     function handlePause(){
@@ -77,6 +80,48 @@ export default function PathfindingVisualizer() {
         }
     }
 
+    function getNewGridWithMaze(grid, walls) {
+        const newGrid = grid.slice();
+        for (let wall of walls) {
+            const node = grid[wall["row"]][wall["col"]];
+            newGrid[wall["row"]][wall["col"]] = {
+                ...node,
+                isWall: true,
+            };
+        }
+        return newGrid;
+    }
+
+    function animateMazeGeneration(walls) {
+        for (let i = 0; i <= walls.length; i++) {
+            if (i === walls.length) {
+                setTimeout(() => {
+                    handleReset();
+                    const newGrid = getNewGridWithMaze(grid, walls);
+                    setGrid(newGrid)
+                }, i * mazeSpeed);
+                return;
+            }
+            let wall = walls[i];
+            let node = grid[wall["row"]][wall["col"]];
+
+            setTimeout(() => {
+                //Walls
+                document.getElementById(`node-${node.row}-${node.col}`).className =
+                    "node node-wall";
+            }, i * mazeSpeed);
+        }
+    }
+
+    function generateMaze() {
+        setTimeout(() => {
+            const startNode = grid[START_NODE_ROW][START_NODE_COL]
+            const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL]
+            const walls = generateRandomMaze(grid, startNode, finishNode)
+            animateMazeGeneration(walls)
+        }, mazeSpeed)
+    }
+
     function visualizeDijkstra(speed) {
         const speed_dict = {
             "Fast": 10,
@@ -96,7 +141,8 @@ export default function PathfindingVisualizer() {
             <NavBar
                 handlePlayButton={visualizeDijkstra}
                 handlePauseButton={handlePause}
-                handleResetButton={handleReset}>
+                handleResetButton={handleReset}
+                generateMaze={generateMaze}>
             </NavBar>
             <div className={"grid"}>
                 {grid.map((row, rowIdx) => {
@@ -135,9 +181,9 @@ export default function PathfindingVisualizer() {
 
 function getInitialGrid() {
     const grid = [];
-    for (let row = 0; row < 20; row++) {
+    for (let row = 0; row < ROW_COUNT; row++) {
         const currentRow = [];
-        for (let col = 0; col < 50; col++) {
+        for (let col = 0; col < COLUMN_COUNT; col++) {
             currentRow.push(createNode(col, row));
         }
         grid.push(currentRow);
