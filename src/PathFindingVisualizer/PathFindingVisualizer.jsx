@@ -3,6 +3,7 @@ import Node from './Node/Node';
 import {dijkstra, getNodesInShortestPathOrder} from '../algorithms/dijkstra';
 
 import './PathFindingVisualizer.css';
+import NavBar from "./NavBar";
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -17,7 +18,26 @@ export default function PathfindingVisualizer() {
         setGrid(getInitialGrid());
     }, []);
 
+    function handleReset() {
+        for (let row = 0; row < 20; row++) {
+            for (let col = 0; col < 50; col++) {
+                if (row === START_NODE_ROW && col === START_NODE_COL){
+                    document.getElementById(`node-${row}-${col}`).className = "node node-start";
+                } else if (row === FINISH_NODE_ROW && col === FINISH_NODE_COL) {
+                    document.getElementById(`node-${row}-${col}`).className = "node node-finish";
+                } else {
+                    document.getElementById(`node-${row}-${col}`).className = "node";
+                }
 
+            }
+        }
+        setGrid(getInitialGrid());
+        console.log(grid)
+    }
+
+    function handlePause(){
+        console.log("pause")
+    }
     function handleMouseDown(row, col) {
         setGrid(getNewGridWithWallToggled(grid, row, col));
         setMouseIsPressed(true);
@@ -41,36 +61,43 @@ export default function PathfindingVisualizer() {
             }, 50 * i);
         }
     }
-    function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder, speed) {
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             if (i === visitedNodesInOrder.length) {
                 setTimeout(() => {
                     animateShortestPath(nodesInShortestPathOrder);
-                }, 10 * i);
+                }, speed * i);
                 return;
             }
             setTimeout(() => {
                 const node = visitedNodesInOrder[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className =
                     'node node-visited';
-            }, 10 * i);
+            }, speed * i);
         }
     }
 
-    function visualizeDijkstra() {
+    function visualizeDijkstra(speed) {
+        const speed_dict = {
+            "Fast": 10,
+            "Medium": 30,
+            "Slow": 50
+        }
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder, speed_dict[speed]);
     }
 
 
     return (
         <>
-            <button onClick={() => visualizeDijkstra()}>
-                Visualize Dijkstra's Algorithm
-            </button>
+            <NavBar
+                handlePlayButton={visualizeDijkstra}
+                handlePauseButton={handlePause}
+                handleResetButton={handleReset}>
+            </NavBar>
             <div className={"grid"}>
                 {grid.map((row, rowIdx) => {
                     return (
