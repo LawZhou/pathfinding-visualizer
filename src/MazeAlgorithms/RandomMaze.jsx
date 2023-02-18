@@ -45,8 +45,8 @@ export default function generateRandomMaze(grid, startNode, finishNode) {
     }
 
     const walls = []
-    for (let row = 2; row < row_count - 2; row += 2) {
-        for (let col = 2; col < column_count - 2; col += 2) {
+    for (let row = 0; row < row_count; row++) {
+        for (let col = 0; col < column_count; col++) {
             if (newGrid[row][col].isWall) {
                 walls.push(newGrid[row][col]);
             }
