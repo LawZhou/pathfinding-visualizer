@@ -4,7 +4,7 @@ import { Speed, PlayArrow, Pause, Replay} from "@mui/icons-material";
 
 function Navbar({handlePlayButton, handlePauseButton, handleResetButton, generateMaze}) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [speed, setSpeed] = useState("Medium");
+  const [speed, setSpeed] = useState("Fast");
   const [isRunning, setIsRunning] = useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

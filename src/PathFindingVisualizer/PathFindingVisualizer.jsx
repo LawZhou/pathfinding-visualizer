@@ -5,6 +5,7 @@ import './PathFindingVisualizer.css';
 import NavBar from "./NavBar";
 
 import generateRandomMaze from "../MazeAlgorithms/RandomMaze";
+import GenerateDFSMaze from "../MazeAlgorithms/GenerateDFSMaze";
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -117,7 +118,8 @@ export default function PathfindingVisualizer() {
         setTimeout(() => {
             const startNode = grid[START_NODE_ROW][START_NODE_COL]
             const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL]
-            const walls = generateRandomMaze(grid, startNode, finishNode)
+            // const walls = generateRandomMaze(grid, startNode, finishNode)
+            const walls = GenerateDFSMaze(grid, startNode, finishNode)
             animateMazeGeneration(walls)
         }, mazeSpeed)
     }
