@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Node from './Node/Node';
-import {dijkstra, getNodesInShortestPathOrder} from '../algorithms/dijkstra';
+import {dijkstra} from '../algorithms/dijkstra';
+import {breadthFirstSearch} from '../algorithms/breadthFirstSearch';
+import {getNodesInShortestPathOrder} from "../utils/utils";
 import './PathFindingVisualizer.css';
 import NavBar from "./NavBar";
 
@@ -132,7 +134,8 @@ export default function PathfindingVisualizer() {
         }
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+        // const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+        const visitedNodesInOrder = breadthFirstSearch(grid, startNode, finishNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder, speed_dict[speed]);
     }
